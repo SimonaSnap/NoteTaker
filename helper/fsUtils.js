@@ -12,7 +12,7 @@ const writeToFile = (destination, content) =>
 
 const readAndAppend = (content, file) =>
 {
-    fs.watchFile(file, "utf8", (err, data) =>
+    fs.readFile(file, "utf8", (err, data) =>
     {
         if (err)
         {

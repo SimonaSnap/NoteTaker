@@ -6,6 +6,7 @@ const fs = require("fs")
 const router = express.Router();
 router.use(express.json());
 
+
 router.get("/", (req, res) =>
 {
     readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)))
@@ -35,36 +36,20 @@ router.post('/', (req, res) =>
     if (req.body)
     {
         const newNote = {
-            title,
-            text,
+            title: bodyArr[0],
+            text: bodyArr[1],
             noteId: uuidv4,
         }
 
-        fs.watchFile("./db/db.json", (err, newNote) =>
-        {
-            if (err)
-            {
-                console.log(err)
-            }
-            else
-            {
-                const parsed = JSON.parse(req.body);
-                parsed.push(newNote);
-                writeToFile("./db/db.json", parsed);
-            }
-        })
+
+
+        readAndAppend(newNote, "./db/db.json");
+        res.json("Note added successfully");
+    } else
+    {
+        res.status(400).json("Error in adding a note");
     }
 
-
-    //     readAndAppend("./db/db,json", newNote);
-    //     res.json("Note added successfully");
-    // } else
-    // {
-    //     res.status(400).json("Error in adding a note");
-    // }
-
 })
-
-
 
 module.exports = router;
