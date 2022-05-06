@@ -12,7 +12,7 @@ const writeToFile = (destination, content) =>
 
 const readAndAppend = (content, file) =>
 {
-    fs.watchFile(file, 'utf8', (err, data) =>
+    fs.watchFile(file, "utf8", (err, data) =>
     {
         if (err)
         {
@@ -28,3 +28,5 @@ const readAndAppend = (content, file) =>
 //this would check what already exists in the db.json file
 //if not empty, it will parse the data out, add the new note on the end and then send it
 //to the writeToFile function that will stringify it and save the json
+
+module.exports = { readFromFile, writeToFile, readAndAppend }

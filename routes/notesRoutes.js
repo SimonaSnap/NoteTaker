@@ -1,15 +1,17 @@
 const express = require("express");
 const { route } = require("express/lib/application");
 const { readAndAppend, writeToFile, readFromFile } = require("../helper/fsUtils")
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs")
 const router = express.Router();
 router.use(express.json());
 
-router.get("/api/notes", (req, res) =>
+router.get("/", (req, res) =>
 {
-    readFromFile("../db/db.json").then((data) => res.json(JSON.parse(data)))
+    readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)))
 });
 
-router.get('/api/notes/:id', (req, res) =>
+router.get('/:id', (req, res) =>
 {
     const noteId = res.params.id;
     readFromFile('./db/db.json')
@@ -23,26 +25,43 @@ router.get('/api/notes/:id', (req, res) =>
         })
 })
 
-router.post('/api/notes', (req, res) =>
+router.post('/', (req, res) =>
 {
-    const bodyArr = [req.body.title, req.body.text]
+    console.log(req.body)
+    const bodyArr = [req.body.title, req.body.text, req.body.id]
 
-    const { title, text } = bodyArr;
+    const { title, text, noteId } = bodyArr;
 
     if (req.body)
     {
         const newNote = {
             title,
             text,
+            noteId: uuidv4,
         }
 
-
-        readAndAppend(newNote, "./db/tips.json");
-        res.json("Note added successfully");
-    } else
-    {
-        res.status(400).json("Error in adding a note");
+        fs.watchFile("./db/db.json", (err, newNote) =>
+        {
+            if (err)
+            {
+                console.log(err)
+            }
+            else
+            {
+                const parsed = JSON.parse(req.body);
+                parsed.push(newNote);
+                writeToFile("./db/db.json", parsed);
+            }
+        })
     }
+
+
+    //     readAndAppend("./db/db,json", newNote);
+    //     res.json("Note added successfully");
+    // } else
+    // {
+    //     res.status(400).json("Error in adding a note");
+    // }
 
 })
 
