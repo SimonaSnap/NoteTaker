@@ -37,7 +37,7 @@ router.delete('/:id', (req, res) =>
         {
             const newString = saved.filter((note) => note.id !== noteId);
             writeToFile("./db/db.json", newString);
-            res.status("200").json("deleting a note");
+            res.status(200).json("deleting a note");
         })
 })
 
