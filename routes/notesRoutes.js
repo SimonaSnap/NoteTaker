@@ -38,7 +38,7 @@ router.post('/', (req, res) =>
         const newNote = {
             title: bodyArr[0],
             text: bodyArr[1],
-            noteId: uuidv4,
+            id: uuidv4(),
         }
 
 
@@ -49,6 +49,12 @@ router.post('/', (req, res) =>
     {
         res.status(400).json("Error in adding a note");
     }
+
+})
+
+router.delete('/:id', (req, res) =>
+{
+    const note = res.params.id
 
 })
 
