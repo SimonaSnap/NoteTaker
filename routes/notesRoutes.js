@@ -2,7 +2,8 @@ const express = require("express");
 const { route } = require("express/lib/application");
 const { readAndAppend, writeToFile, readFromFile } = require("../helper/fsUtils")
 const { v4: uuidv4 } = require("uuid");
-const fs = require("fs")
+const fs = require("fs");
+const { notStrictEqual } = require("assert");
 const router = express.Router();
 router.use(express.json());
 
@@ -26,9 +27,24 @@ router.get('/:id', (req, res) =>
         })
 })
 
+router.delete('/:id', (req, res) =>
+{
+    const noteId = req.params.id
+
+    readFromFile("./db/db.json")
+        .then((inside) => JSON.parse(inside))
+        .then((saved) =>
+        {
+            const newString = saved.filter((note) => note.id !== noteId);
+            writeToFile("./db/db.json", newString);
+            //readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)));
+            //refreshing.reload()
+        })
+})
+
 router.post('/', (req, res) =>
 {
-    console.log(req.body)
+    //console.log(req.body)
     const bodyArr = [req.body.title, req.body.text, req.body.id]
 
     const { title, text, noteId } = bodyArr;
@@ -45,17 +61,11 @@ router.post('/', (req, res) =>
 
         readAndAppend(newNote, "./db/db.json");
         res.json("Note added successfully");
-    } else
+    }
+    else
     {
         res.status(400).json("Error in adding a note");
     }
-
-})
-
-router.delete('/:id', (req, res) =>
-{
-    const note = res.params.id
-
 })
 
 module.exports = router;

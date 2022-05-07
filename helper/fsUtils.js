@@ -5,7 +5,7 @@ const readFromFile = util.promisify(fs.readFile);
 //this allows us to then add .then kind of code after reading the file
 
 const writeToFile = (destination, content) =>
-    fs.writeFile(destination, JSON.stringify(content), (err) =>
+    fs.writeFile(destination, JSON.stringify(content, null, 4), (err) =>
         err ? console.error(err) : console.info(`Data written to ${destination}`)
     )
 //this takes the final data from the readAndAppend function and writes it to the desired destination
